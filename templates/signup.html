@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - AI Web App</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom CSS for extra styling */
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            left: 0.75rem;
+            transform: translateY(-50%);
+        }
+        /* Custom CSS for animated slice effect */
+        .slice-animation:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #1a202c 50%, transparent);
+            animation: slice 2s infinite linear;
+        }
+        @keyframes slice {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        /* Custom CSS for loading circle */
+        #loading-circle {
+            display: none; /* Initially hidden */
+            width: 60px;
+            height: 60px;
+            border: 6px solid #ccc;
+            border-top-color: #ff6b6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite; /* Animation */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        /* Animation for loading circle */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <!-- Navbar -->
+    <nav class="bg-purple-600 p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold tracking-wide animate-bounce m-2">AI Blog Generator</h1>
+            <a href="/login"><button class="nav-item bg-purple-800 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">Login</button></a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex justify-center items-center h-screen">
+        <div class="w-full max-w-sm bg-gray-800 p-8 rounded-lg shadow-lg relative">
+            <!-- Animated slice effect -->
+            <div class="absolute inset-0 slice-animation"></div>
+
+            <!-- Loading circle -->
+            <div id="loading-circle"></div>
+
+            <h1 class="text-2xl font-bold mb-4 text-center">Sign Up for AI Web App</h1>
+
+                <!-- Error Message -->
+                {% if messages %}
+                    <div>
+                        {% for message in messages %}
+                            <div class="bg-red-600 text-white text-center py-2 px-4 mb-4 rounded-lg">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+
+            <form action="" method="POST">
+                {% csrf_token %}
+                
+                <div class="relative mb-4">
+                    <span class="input-icon">
+                        <i class="fas fa-user text-gray-500"></i>
+                    </span>
+                    <input type="text" class="w-full py-2 px-4 pl-10 rounded-lg bg-gray-700 placeholder-gray-500 focus:outline-none focus:ring focus:border-purple-500" name='username' placeholder="Username">
+                </div>
+                <div class="relative mb-4">
+                    <span class="input-icon">
+                        <i class="fas fa-envelope text-gray-500"></i>
+                    </span>
+                    <input type="email" class="w-full py-2 px-4 pl-10 rounded-lg bg-gray-700 placeholder-gray-500 focus:outline-none focus:ring focus:border-purple-500" name='email' placeholder="Email">
+                </div>
+                <div class="relative mb-4">
+                    <span class="input-icon">
+                        <i class="fas fa-lock text-gray-500"></i>
+                    </span>
+                    <input type="password" class="w-full py-2 px-4 pl-10 rounded-lg bg-gray-700 placeholder-gray-500 focus:outline-none focus:ring focus:border-purple-500" name='password' placeholder="Password">
+                </div>
+                <div class="relative mb-4">
+                    <span class="input-icon">
+                        <i class="fas fa-lock text-gray-500"></i>
+                    </span>
+                    <input type="password" class="w-full py-2 px-4 pl-10 rounded-lg bg-gray-700 placeholder-gray-500 focus:outline-none focus:ring focus:border-purple-500" name="repeatpassword" placeholder="Repeat Password">
+                </div>
+                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring focus:border-purple-500">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 text-sm mt-8">
+        Powered by <i class="far fa-copyright"></i> Sourav Kumar Singh
+    </footer>
+
+</body>
+</html>

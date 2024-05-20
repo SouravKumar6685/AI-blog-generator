@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Web App</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Tailwind CSS Animation CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss-animate@1.0.0/dist/tailwindcss-animate.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for extra styling */
+        .nav-item:hover {
+            @apply bg-purple-700 transition duration-300 ease-in-out;
+        }
+        /* Custom CSS for hover effect near heading */
+        .heading-hover:hover ~ .hover-effect::before {
+            opacity: 1;
+        }
+        /* Custom CSS for main body */
+        .main-body {
+            background-color: #1a202c; /* Dark black background color */
+        }
+        /* Custom CSS for animated slice effect */
+        .slice-animation:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #1a202c 50%, transparent);
+            animation: slice 2s infinite linear;
+        }
+        @keyframes slice {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        /* Custom CSS for sliding animation */
+        @keyframes slide {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+        .slide-in {
+            animation: slide 3s forwards;
+        }
+
+        .main-body:hover {
+            transform: scale(1.1); /* Increase size on hover */
+            transition: transform 0.3s ease; /* Smooth transition */
+        }
+
+        /* Custom CSS to change link color inside input */
+        input[type="url"] {
+            color: black; /* Set link color to black */
+        }
+
+        /* Custom CSS for loading circle */
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to { 
+                transform: rotate(360deg);
+            }
+        }
+         
+        @-webkit-keyframes rotate {
+            from {
+                -webkit-transform: rotate(0deg);
+            }
+            to { 
+                -webkit-transform: rotate(360deg);
+            }
+        }
+        
+        .load {
+            width: 100px;
+            height: 100px;
+            margin: 110px auto 0;
+            border:solid 10px #8822aa;
+            border-radius: 50%;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+             -webkit-transition: all 0.5s ease-in;
+            -webkit-animation-name:             rotate; 
+            -webkit-animation-duration:         1.0s; 
+            -webkit-animation-iteration-count:  infinite;
+            -webkit-animation-timing-function: linear;
+                
+                 transition: all 0.5s ease-in;
+            animation-name:             rotate; 
+            animation-duration:         1.0s; 
+            animation-iteration-count:  infinite;
+            animation-timing-function: linear; 
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navbar -->
+    <nav class="bg-purple-600 p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold tracking-wide animate-bounce m-2">AI Blog Generator</h1>
+            <a href="/logout"><button class="nav-item bg-purple-800 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">Logout</button></a>
+        </div>
+    </nav>
+    
+    <br>
+    <br>
+
+    <!-- Main Content -->
+    <div class="flex-grow container mx-auto mt-10 px-4 sm:px-0">
+        <div class="rounded-lg">
+            <div class="container mx-auto p-4 main-body relative">
+                <!-- Animated headline with sliding animation -->
+                <h1 class="text-4xl font-bold text-center mt-10 relative z-10 slide-in">Welcome to AI Blog Generator <b>{{ user.username }}..!</b></h1>
+                <!-- Added paragraph -->
+                <p class="text-center mt-4 relative z-10">Generate high-quality blog articles from videos using AI (Artificial Intelligence). Simply provide the link below and let AI create the content for you..!!</p>
+                <p class="text-center mt-4 relative z-10">This is a basic project using Django and Tailwind CSS.</p>
+                <!-- Animated slice effect -->
+                <div class="absolute inset-0 slice-animation"></div>
+            </div>
+
+            <br>
+            <br>
+
+            <!-- Input for video link and generate button -->
+            <div class="mt-8 flex justify-center items-center">
+                <h2 class="text-lg font-semibold text-white">Enter Video Link:</h2>
+                <input id="youtubeLink" class="ml-4 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:border-purple-500" type="url" placeholder="Paste Video Link..">
+                <button id="generateBlogButton" class="ml-4 px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring focus:border-purple-500">Generate</button>
+            </div>
+
+            <!-- Loading circle section -->
+            <div style="display:none" id="loading-circle" class="load"></div>
+
+            <!-- Generated Blog Display Section -->
+            <section class="mt-8 p-6">
+                <h2 class="text-2xl font-semibold text-white mb-4">Generated Blog Article</h2>
+                <div id="blogContent" class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                    <!-- Placeholder for generated blog content -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center mt-8 text-gray-500">
+        Powered by <i class="fa-regular fa-copyright"></i> Sourav Kumar Singh
+    </footer>
+
+    <script>
+        document.getElementById('generateBlogButton').addEventListener('click', async () => {
+            const youtubeLink = document.getElementById('youtubeLink').value;
+            const blogContent = document.getElementById('blogContent');
+            
+            if (youtubeLink) {
+                document.getElementById('loading-circle').style.display = 'block';
+                blogContent.innerHTML = ''; // Clear previous content
+
+                const endpointUrl = '/generate-blog/'; // Ensure the trailing slash is present
+
+                try {
+                    const response = await fetch(endpointUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ link: youtubeLink })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const data = await response.json();
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    blogContent.innerHTML = data.content;
+
+                } catch (error) {
+                    console.error("Error occurred:", error);
+                    alert("Something went wrong. Please try again later.");
+                } finally {
+                    document.getElementById('loading-circle').style.display = 'none';
+                }
+            } else {
+                alert("Please enter a YouTube link.");
+            }
+        });
+    </script>
+</body>
+</html>
